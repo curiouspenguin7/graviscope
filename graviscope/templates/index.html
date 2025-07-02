@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GraviScope</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    input { margin: 10px; }
+    img { max-width: 100%; height: auto; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>🌌 GraviScope: Gravitational Wave Visualizer</h1>
+  <form id="sim-form">
+    <input type="number" placeholder="Mass 1 (Solar Masses)" id="mass1" value="30" required>
+    <input type="number" placeholder="Mass 2 (Solar Masses)" id="mass2" value="30" required>
+    <input type="number" placeholder="Separation (km)" id="separation" value="100" required>
+    <button type="submit">Simulate</button>
+  </form>
+  <img id="waveform" />
+  <script>
+    document.getElementById('sim-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const mass1 = document.getElementById('mass1').value;
+      const mass2 = document.getElementById('mass2').value;
+      const separation = document.getElementById('separation').value;
+      const res = await fetch('/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mass1, mass2, separation })
+      });
+      const data = await res.json();
+      document.getElementById('waveform').src = `data:image/png;base64,${data.waveform}`;
+    };
+  </script>
+</body>
+</html>
